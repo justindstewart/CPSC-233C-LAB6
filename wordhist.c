@@ -7,8 +7,7 @@
 
   Lab 6: word frequencies in O(n log n) time
 
-  Authors: TODO: replace this with your names and CSUF email addresses
-
+  Authors: Justin Stewart (scubastew@csu.fullerton.edu)
 */ 
 
 #include <assert.h>
@@ -30,6 +29,8 @@ WordHist* word_hist_parse(char* filename) {
   FILE *f;
   char **tokens;  /* array of strings corresponding to all the tokens in f */
   int n;          /* number of tokens */
+  char str[MAX_WORD_LENGTH];
+  int count = 0;
 
   /* TODO: You will probably need more local variables. */
 
@@ -45,12 +46,21 @@ WordHist* word_hist_parse(char* filename) {
      and continues until EOF is reached. Essentially you need to count
      the words one by one. Hint: see how word tokens are read with
      fscanf in the Lab 5 solution code. */
+  n = 0;
+  while(fscanf(f, "%s", str) != EOF) {
+    n++;
+  }
 
   /* TODO: Now that you know how many tokens there are, initialize the
      tokens array by allocating an array of n char* pointers. Hint:
      use calloc. Remeber that, if the allocation fails, you have to
      close f and return NULL. */
-
+  if(!(tokens = calloc(n, sizeof(char*)))) {
+    fprintf(stderr, "\nError: failed allocation of tokens");
+    fclose(f);
+    return NULL;
+  }
+  
   /* TODO: Now go back and load the contents of each token into
      memory. Rewind f back to the beginning. Then use a loop that
      reads one word into a stack-allocated string, copies that string
@@ -58,12 +68,29 @@ WordHist* word_hist_parse(char* filename) {
      tokens array. Hint: use rewind() and strdup(). Remember that,
      again, if any allocation fails you need to close f, free
      everything, and return NULL. */
+  rewind(f);
 
+  while(fscanf(f, "%s", str) != EOF) {
+    char  *heapString;
+    
+    heapString = malloc(sizeof(str));
+
+    if(heapString == NULL) {
+      return NULL;
+    }
+
+    heapString = strdup(str);
+
+    tokens[count] = heapString;
+    count++;
+  }
+  
   /* We are done with f. */
   fclose(f);
 
   /* TODO: sort tokens with qsort(). */
 
+  qsort(
   /* TODO: Initialize hist by allocating memory for it with
      malloc(). If this fails you need to free all the words and return
      NULL. */
