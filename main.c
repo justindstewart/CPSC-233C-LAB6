@@ -26,7 +26,6 @@ int main(int argc, char** argv) {
     return 1;
   }
   filename = argv[1];
-
   hist = word_hist_parse(filename);
   if (hist == NULL) {
     fprintf(stderr, "error parsing '%s'\n", filename);
